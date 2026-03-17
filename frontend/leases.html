@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Leases</title>
+<link rel="stylesheet" href="css/styles.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">🏬 eMall</div>
+
+<a href="index.html">Dashboard</a>
+<a href="owners.html">Owners</a>
+<a href="properties.html">Properties</a>
+<a href="tenants.html">Tenants</a>
+<a href="leases.html">Leases</a>
+<a href="rent.html">Rent</a>
+<a href="maintenance.html">Maintenance</a>
+
+</div>
+
+
+<div class="main">
+
+<div class="topbar">
+
+<h1>Lease Agreements</h1>
+
+<input class="search" placeholder="Search lease">
+
+</div>
+
+
+<div class="card">
+
+<h2>Create Lease</h2>
+
+<form>
+
+<input id="property_id" placeholder="Property ID" required>
+
+<input id="tenant_id" placeholder="Tenant ID" required>
+
+<input type="date" id="lease_start" required>
+
+<input type="date" id="lease_end" required>
+
+<button type="button" onclick="addLease()">Create Lease</button>
+
+</form>
+
+</div>
+
+</div>
+
+<script src="js/main.js"></script>
+
+</body>
+</html>

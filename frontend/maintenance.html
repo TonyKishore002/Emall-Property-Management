@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Maintenance</title>
+<link rel="stylesheet" href="css/styles.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">🏬 eMall</div>
+
+<a href="index.html">Dashboard</a>
+<a href="owners.html">Owners</a>
+<a href="properties.html">Properties</a>
+<a href="tenants.html">Tenants</a>
+<a href="leases.html">Leases</a>
+<a href="rent.html">Rent</a>
+<a href="maintenance.html">Maintenance</a>
+
+</div>
+
+
+<div class="main">
+
+<div class="topbar">
+
+<h1>Maintenance</h1>
+
+<input class="search" placeholder="Search maintenance">
+
+</div>
+
+
+<div class="card">
+
+<h2>Create Request</h2>
+
+<form>
+
+<input id="property_id" placeholder="Property ID" required>
+
+<input id="issue" placeholder="Issue Description" required>
+
+<select id="status" required>
+<option value="">Select Status</option>
+<option>Pending</option>
+<option>Resolved</option>
+</select>
+
+<button type="button" onclick="addMaintenance()">Submit Request</button>
+
+</form>
+
+</div>
+
+</div>
+
+<script src="js/main.js"></script>
+
+</body>
+</html>

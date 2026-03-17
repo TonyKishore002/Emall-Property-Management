@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Properties</title>
+<link rel="stylesheet" href="css/styles.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">🏬 eMall</div>
+
+<a href="index.html">Dashboard</a>
+<a href="owners.html">Owners</a>
+<a href="properties.html">Properties</a>
+<a href="tenants.html">Tenants</a>
+<a href="leases.html">Leases</a>
+<a href="rent.html">Rent</a>
+<a href="maintenance.html">Maintenance</a>
+
+</div>
+
+
+<div class="main">
+
+<div class="topbar">
+
+<h1>Properties</h1>
+
+<input class="search" placeholder="Search properties">
+
+</div>
+
+
+<div class="card">
+
+<h2>Add Property</h2>
+
+<form>
+
+<input id="owner_id" placeholder="Owner ID" required>
+
+<input id="shop_number" placeholder="Shop Number" required>
+
+<input id="floor" placeholder="Floor" required>
+
+<input id="rent_price" placeholder="Rent Price" required>
+
+<button type="button" onclick="addProperty()">Add Property</button>
+
+</form>
+</div>
+
+</div>
+
+<script src="js/main.js"></script>
+
+</body>
+</html>

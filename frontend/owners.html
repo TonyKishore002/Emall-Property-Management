@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Owners</title>
+<link rel="stylesheet" href="css/styles.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">🏬 eMall</div>
+
+<a href="index.html">Dashboard</a>
+<a href="owners.html">Owners</a>
+<a href="properties.html">Properties</a>
+<a href="tenants.html">Tenants</a>
+<a href="leases.html">Leases</a>
+<a href="rent.html">Rent</a>
+<a href="maintenance.html">Maintenance</a>
+
+</div>
+
+
+<div class="main">
+
+<div class="topbar">
+
+<h1>Owners</h1>
+
+<input class="search" placeholder="Search owners">
+
+</div>
+
+
+<div class="card">
+
+<h2>Add Owner</h2>
+
+<form>
+
+<input id="owner_name" placeholder="Owner Name" required>
+
+<input id="owner_phone" placeholder="Phone" required>
+
+<input id="owner_email" placeholder="Email" required>
+
+<button type="button" onclick="addOwner()">Add Owner</button>
+
+</form>
+</div>
+
+
+<div class="card">
+
+<h2>Owner List</h2>
+
+<table>
+
+<thead>
+
+<tr>
+<th>Name</th>
+<th>Phone</th>
+<th>Email</th>
+</tr>
+
+</thead>
+
+<tbody id="ownerTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script src="js/main.js"></script>
+
+</body>
+</html>

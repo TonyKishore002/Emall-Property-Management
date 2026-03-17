@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Tenants</title>
+<link rel="stylesheet" href="css/styles.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">🏬 eMall</div>
+
+<a href="index.html">Dashboard</a>
+<a href="owners.html">Owners</a>
+<a href="properties.html">Properties</a>
+<a href="tenants.html">Tenants</a>
+<a href="leases.html">Leases</a>
+<a href="rent.html">Rent</a>
+<a href="maintenance.html">Maintenance</a>
+
+</div>
+
+
+<div class="main">
+
+<div class="topbar">
+
+<h1>Tenants</h1>
+
+<input class="search" placeholder="Search tenants">
+
+</div>
+
+
+<div class="card">
+
+<h2>Add Tenant</h2>
+
+<form>
+
+<input id="tenant_name" placeholder="Tenant Name" required>
+
+<input id="business_type" placeholder="Business Type" required>
+
+<input id="tenant_phone" placeholder="Phone" required>
+
+<button type="button" onclick="addTenant()">Add Tenant</button>
+
+</form>
+</div>
+
+
+<div class="card">
+
+<h2>Tenant List</h2>
+
+<table>
+
+<thead>
+
+<tr>
+<th>Name</th>
+<th>Business</th>
+<th>Phone</th>
+</tr>
+
+</thead>
+
+<tbody id="tenantTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script src="js/main.js"></script>
+
+</body>
+</html>

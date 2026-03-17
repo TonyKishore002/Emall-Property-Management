@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>eMall Dashboard</title>
+
+<link rel="stylesheet" href="css/styles.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body onload="loadDashboard()">
+
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<div class="logo">🏬 eMall</div>
+
+<a href="index.html">Dashboard</a>
+<a href="owners.html">Owners</a>
+<a href="properties.html">Properties</a>
+<a href="tenants.html">Tenants</a>
+<a href="leases.html">Leases</a>
+<a href="rent.html">Rent</a>
+<a href="maintenance.html">Maintenance</a>
+
+</div>
+<!-- MAIN CONTENT -->
+
+<div class="main">
+
+<div class="topbar">
+
+<h1>Dashboard</h1>
+
+<input class="search" placeholder="Search">
+
+</div>
+
+
+<!-- STATISTICS -->
+
+<div class="stats">
+
+<div class="stat-card">
+
+<i class="fa fa-user"></i>
+
+<h3>Owners</h3>
+
+<p id="ownerCount">0</p>
+
+</div>
+
+
+<div class="stat-card">
+
+<i class="fa fa-building"></i>
+
+<h3>Properties</h3>
+
+<p id="propertyCount">0</p>
+
+</div>
+
+
+<div class="stat-card">
+
+<i class="fa fa-users"></i>
+
+<h3>Tenants</h3>
+
+<p id="tenantCount">0</p>
+
+</div>
+
+
+<div class="stat-card">
+
+<i class="fa fa-money-bill"></i>
+
+<h3>Total Rent</h3>
+
+<p id="rentTotal">₹0</p>
+
+</div>
+
+</div>
+
+
+<!-- CHART + ACTIVITY -->
+
+<div class="dashboard-grid">
+
+
+<div class="card">
+
+<h2>Rent Collection Analytics</h2>
+
+<canvas id="rentChart"></canvas>
+
+</div>
+
+
+<div class="card">
+
+<h2>Recent Activity</h2>
+
+<ul id="activityList">
+
+<li>New tenant added</li>
+<li>Rent payment recorded</li>
+<li>Maintenance request submitted</li>
+
+</ul>
+
+</div>
+
+</div>
+
+
+<!-- OCCUPANCY -->
+
+<div class="card">
+
+<h2>Property Occupancy</h2>
+
+<div class="progress-bar">
+
+<div id="occupancyBar"></div>
+
+</div>
+
+<p id="occupancyText">0% Occupied</p>
+
+</div>
+
+
+</div>
+
+<script src="js/main.js"></script>
+
+</body>
+
+</html>

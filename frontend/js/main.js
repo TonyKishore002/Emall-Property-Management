@@ -1,405 +1,459 @@
+﻿const API = "http://localhost:5000/api";
+
 // ======================
-// DASHBOARD COUNTS
+// DASHBOARD
 // ======================
 
-async function loadDashboardCounts(){
+async function loadDashboard() {
+  try {
+    const ownersResponse = await fetch(`${API}/owners`);
+    const ownersData = await ownersResponse.json();
 
-try{
+    const tenantsResponse = await fetch(`${API}/tenants`);
+    const tenantsData = await tenantsResponse.json();
 
-// Owners
-const ownersRes = await fetch("http://localhost:5000/api/owners");
-const owners = await ownersRes.json();
-document.getElementById("ownersCount").innerText = owners.length;
+    const propertiesResponse = await fetch(`${API}/properties`);
+    const propertiesData = await propertiesResponse.json();
 
+    const leasesResponse = await fetch(`${API}/leases`);
+    const leasesData = await leasesResponse.json();
 
-// Properties
-const propRes = await fetch("http://localhost:5000/api/properties");
-const properties = await propRes.json();
-document.getElementById("propertiesCount").innerText = properties.length;
+    const rentResponse = await fetch(`${API}/rent`);
+    const rentData = await rentResponse.json();
 
+    const maintenanceResponse = await fetch(`${API}/maintenance`);
+    const maintenanceData = await maintenanceResponse.json();
 
-// Tenants
-const tenantsRes = await fetch("http://localhost:5000/api/tenants");
-const tenants = await tenantsRes.json();
-document.getElementById("tenantsCount").innerText = tenants.length;
+    const ownerCountElement = document.getElementById("ownerCount");
+    if (ownerCountElement) ownerCountElement.innerText = ownersData.length;
 
+    const propertyCountElement = document.getElementById("propertyCount");
+    if (propertyCountElement) propertyCountElement.innerText = propertiesData.length;
 
-// Maintenance
-const maintRes = await fetch("http://localhost:5000/api/maintenance");
-const maintenance = await maintRes.json();
-document.getElementById("maintenanceCount").innerText = maintenance.length;
+    const tenantCountElement = document.getElementById("tenantCount");
+    if (tenantCountElement) tenantCountElement.innerText = tenantsData.length;
 
-}catch(err){
-console.log("Dashboard load error", err);
+    const totalRent = rentData.reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
+    const rentTotalElement = document.getElementById("rentTotal");
+    if (rentTotalElement) rentTotalElement.innerText = `₹${totalRent}`;
+
+    const occupancy = propertiesData.length ? Math.round((leasesData.length / propertiesData.length) * 100) : 0;
+    const occupancyBarElement = document.getElementById("occupancyBar");
+    if (occupancyBarElement) occupancyBarElement.style.setProperty("width", `${occupancy}%`);
+
+    const occupancyTextElement = document.getElementById("occupancyText");
+    if (occupancyTextElement) occupancyTextElement.innerText = `${occupancy}% Occupied`;
+
+    const maintenanceCountElement = document.getElementById("maintenanceCount");
+    if (maintenanceCountElement) maintenanceCountElement.innerText = maintenanceData.length;
+  } catch (err) {
+    console.error("Dashboard error", err);
+  }
 }
 
-}
-const API = "http://localhost:5000/api";
-
-
 // ======================
-// ADD OWNER
+// OWNER
 // ======================
 
-async function addOwner(){
+async function addOwner() {
+  const name = document.getElementById("owner_name").value;
+  const phone = document.getElementById("owner_phone").value;
+  const email = document.getElementById("owner_email").value;
 
-const name = document.getElementById("owner_name").value;
-const phone = document.getElementById("owner_phone").value;
-const email = document.getElementById("owner_email").value;
+  if (!name || !phone || !email) {
+    alert("All fields required");
+    return;
+  }
 
-await fetch(`${API}/owners`,{
-method:"POST",
-headers:{ "Content-Type":"application/json"},
-body: JSON.stringify({name, phone, email})
-});
+  await fetch(`${API}/owners`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ owner_name: name, phone, email }),
+  });
 
-clearOwnerInputs();
-loadOwners();
-}
+  document.getElementById("owner_name").value = "";
+  document.getElementById("owner_phone").value = "";
+  document.getElementById("owner_email").value = "";
 
-
-// ======================
-// CLEAR OWNER INPUTS
-// ======================
-
-function clearOwnerInputs(){
-
-document.getElementById("owner_name").value="";
-document.getElementById("owner_phone").value="";
-document.getElementById("owner_email").value="";
-
+  loadOwners();
+  loadDashboard();
 }
 
+async function loadOwners() {
+  const res = await fetch(`${API}/owners`);
+  const data = await res.json();
+  const table = document.getElementById("ownerTable");
+  if (!table) return;
 
-// ======================
-// LOAD OWNERS LIST
-// ======================
+  table.innerHTML = "";
+  data.forEach((o) => {
+    table.innerHTML += `
+      <tr>
+        <td>${o.owner_name}</td>
+        <td>${o.phone || "N/A"}</td>
+        <td>${o.email || "N/A"}</td>
+      </tr>
+    `;
+  });
 
-async function loadOwners(){
-
-const res = await fetch(`${API}/owners`);
-const data = await res.json();
-
-const table = document.getElementById("ownerTable");
-
-if(!table) return;
-
-table.innerHTML="";
-
-data.forEach(owner => {
-
-table.innerHTML += `
-<tr>
-<td>${owner.name}</td>
-<td>${owner.phone}</td>
-<td>${owner.email}</td>
-</tr>
-`;
-
-});
-
+  if (typeof populateOwnerOptions === "function") populateOwnerOptions();
 }
 
-
-
 // ======================
-// ADD TENANT
+// TENANT
 // ======================
 
-async function addTenant(){
+async function addTenant() {
+  const tenant_name = document.getElementById("tenant_name").value;
+  const business_type = document.getElementById("business_type").value;
+  const tenant_phone = document.getElementById("tenant_phone").value;
 
-const tenant_name = document.getElementById("tenant_name").value;
-const business_type = document.getElementById("business_type").value;
-const tenant_phone = document.getElementById("tenant_phone").value;
+  if (!tenant_name || !business_type || !tenant_phone) {
+    alert("All fields required");
+    return;
+  }
 
-await fetch(`${API}/tenants`,{
-method:"POST",
-headers:{ "Content-Type":"application/json"},
-body: JSON.stringify({tenant_name, business_type, tenant_phone})
-});
+  await fetch(`${API}/tenants`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ tenant_name, business_type, phone: tenant_phone }),
+  });
 
-clearTenantInputs();
-loadTenants();
+  document.getElementById("tenant_name").value = "";
+  document.getElementById("business_type").value = "";
+  document.getElementById("tenant_phone").value = "";
 
+  loadTenants();
+  loadDashboard();
 }
 
+async function loadTenants() {
+  const res = await fetch(`${API}/tenants`);
+  const data = await res.json();
+  const table = document.getElementById("tenantTable");
+  if (!table) return;
 
+  table.innerHTML = "";
+  data.forEach((tenant) => {
+    table.innerHTML += `
+      <tr>
+        <td>${tenant.tenant_name}</td>
+        <td>${tenant.business_type}</td>
+        <td>${tenant.phone}</td>
+      </tr>
+    `;
+  });
 
-// ======================
-// CLEAR TENANT INPUTS
-// ======================
-
-function clearTenantInputs(){
-
-document.getElementById("tenant_name").value="";
-document.getElementById("business_type").value="";
-document.getElementById("tenant_phone").value="";
-
+  if (typeof populateTenantOptions === "function") populateTenantOptions();
 }
 
-
-
-// ======================
-// LOAD TENANTS
-// ======================
-
-async function loadTenants(){
-
-const res = await fetch(`${API}/tenants`);
-const data = await res.json();
-
-const table = document.getElementById("tenantTable");
-
-if(!table) return;
-
-table.innerHTML="";
-
-data.forEach(t => {
-
-table.innerHTML += `
-<tr>
-<td>${t.tenant_name}</td>
-<td>${t.business_type}</td>
-<td>${t.tenant_phone}</td>
-</tr>
-`;
-
-});
-
+async function populateOwnerOptions() {
+  const res = await fetch(`${API}/owners`);
+  const data = await res.json();
+  const select = document.getElementById("owner_id");
+  if (!select) return;
+  select.innerHTML = `<option value="">Select Owner</option>`;
+  data.forEach((owner) => {
+    select.innerHTML += `<option value="${owner._id}">${owner.owner_name} (${owner._id.slice(0, 6)})</option>`;
+  });
 }
 
+async function populatePropertyOptions() {
+  const res = await fetch(`${API}/properties`);
+  const data = await res.json();
+  const select = document.getElementById("property_id");
+  if (!select) return;
+  select.innerHTML = `<option value="">Select Property</option>`;
+  data.forEach((property) => {
+    const ownerName = property.owner_id?.owner_name || "Unknown";
+    select.innerHTML += `<option value="${property._id}">${property.shop_number} - ${ownerName}</option>`;
+  });
+}
 
+async function populateTenantOptions() {
+  const res = await fetch(`${API}/tenants`);
+  const data = await res.json();
+  const select = document.getElementById("tenant_id");
+  if (!select) return;
+  select.innerHTML = `<option value="">Select Tenant</option>`;
+  data.forEach((tenant) => {
+    select.innerHTML += `<option value="${tenant._id}">${tenant.tenant_name} (${tenant.business_type})</option>`;
+  });
+}
+
+async function populateLeaseOptions() {
+  const res = await fetch(`${API}/leases`);
+  const data = await res.json();
+  const select = document.getElementById("lease_id");
+  if (!select) return;
+  select.innerHTML = `<option value="">Select Lease</option>`;
+  data.forEach((lease) => {
+    const propertyLabel = lease.property_id?.shop_number || lease.property_id?._id || "N/A";
+    const tenantLabel = lease.tenant_id?.tenant_name || lease.tenant_id?._id || "N/A";
+    select.innerHTML += `<option value="${lease._id}">${propertyLabel} - ${tenantLabel}</option>`;
+  });
+}
 
 // ======================
-// ADD PROPERTY
+// PROPERTY
 // ======================
 
-async function addProperty(){
+async function addProperty() {
+  const owner_id = document.getElementById("owner_id").value;
+  const shop_number = document.getElementById("shop_number").value;
+  const floor = document.getElementById("floor").value;
+  const rent_price = document.getElementById("rent_price").value;
 
-const owner_id = document.getElementById("owner_id").value;
-const shop_number = document.getElementById("shop_number").value;
-const floor = document.getElementById("floor").value;
-const rent_price = document.getElementById("rent_price").value;
+  if (!owner_id || !shop_number || !floor || !rent_price) {
+    alert("All fields required");
+    return;
+  }
 
-await fetch(`${API}/properties`,{
-method:"POST",
-headers:{ "Content-Type":"application/json"},
-body: JSON.stringify({owner_id, shop_number, floor, rent_price})
-});
+  const propertyRes = await fetch(`${API}/properties`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ owner_id, shop_number, floor, rent_price }),
+  });
 
-document.getElementById("owner_id").value="";
-document.getElementById("shop_number").value="";
-document.getElementById("floor").value="";
-document.getElementById("rent_price").value="";
+  if (!propertyRes.ok) {
+    const errorText = await propertyRes.text();
+    alert(`Property save failed: ${errorText}`);
+    return;
+  }
 
-alert("Property Added");
+  document.getElementById("owner_id").value = "";
+  document.getElementById("shop_number").value = "";
+  document.getElementById("floor").value = "";
+  document.getElementById("rent_price").value = "";
 
-}
-async function loadDashboard(){
-
-/* OWNERS COUNT */
-
-let owners = await fetch("http://localhost:5000/owners")
-let ownerData = await owners.json()
-
-document.getElementById("ownerCount").innerText = ownerData.length
-
-
-/* PROPERTIES COUNT */
-
-let properties = await fetch("http://localhost:5000/properties")
-let propertyData = await properties.json()
-
-document.getElementById("propertyCount").innerText = propertyData.length
-
-
-/* TENANTS COUNT */
-
-let tenants = await fetch("http://localhost:5000/tenants")
-let tenantData = await tenants.json()
-
-document.getElementById("tenantCount").innerText = tenantData.length
-
-
-/* RENT TOTAL */
-
-let rent = await fetch("http://localhost:5000/rent")
-let rentData = await rent.json()
-
-let totalRent = 0
-
-rentData.forEach(r=>{
-totalRent += Number(r.amount)
-})
-
-document.getElementById("rentTotal").innerText = "₹" + totalRent
-
-
-/* OCCUPANCY */
-
-let occupancy = (tenantData.length / propertyData.length) * 100
-
-if(!isNaN(occupancy)){
-document.getElementById("occupancyBar").style.width = occupancy + "%"
-document.getElementById("occupancyText").innerText = Math.round(occupancy) + "% Occupied"
+  loadProperties();
+  loadDashboard();
 }
 
+async function loadProperties() {
+  const res = await fetch(`${API}/properties`);
+  const data = await res.json();
+  const table = document.getElementById("propertyTable");
+  if (!table) return;
+
+  table.innerHTML = "";
+  data.forEach((property) => {
+    const ownerName = property.owner_id?.owner_name || property.owner_id || "Unknown";
+    table.innerHTML += `
+      <tr>
+        <td>${ownerName}</td>
+        <td>${property.shop_number}</td>
+        <td>${property.floor}</td>
+        <td>₹${property.rent_price}</td>
+      </tr>
+    `;
+  });
+
+  if (typeof populatePropertyOptions === "function") populatePropertyOptions();
 }
 
+async function addLease() {
+  const property_id = document.getElementById("property_id").value;
+  const tenant_id = document.getElementById("tenant_id").value;
+  const lease_start = document.getElementById("lease_start").value;
+  const lease_end = document.getElementById("lease_end").value;
 
+  if (!property_id || !tenant_id || !lease_start || !lease_end) {
+    alert("All fields required");
+    return;
+  }
+
+  const leaseRes = await fetch(`${API}/leases`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ property_id, tenant_id, lease_start, lease_end }),
+  });
+
+  if (!leaseRes.ok) {
+    const errorText = await leaseRes.text();
+    alert(`Lease save failed: ${errorText}`);
+    return;
+  }
+
+  document.getElementById("property_id").value = "";
+  document.getElementById("tenant_id").value = "";
+  document.getElementById("lease_start").value = "";
+  document.getElementById("lease_end").value = "";
+
+  loadLeases();
+  loadDashboard();
+}
 
 // ======================
-// ADD LEASE
-// ======================
+// LEASES
 
-async function addLease(){
+async function loadLeases() {
+  const res = await fetch(`${API}/leases`);
+  const data = await res.json();
+  const table = document.getElementById("leaseTable");
+  if (!table) return;
 
-const property_id = document.getElementById("property_id").value;
-const tenant_id = document.getElementById("tenant_id").value;
-const lease_start = document.getElementById("lease_start").value;
-const lease_end = document.getElementById("lease_end").value;
+  table.innerHTML = "";
+  data.forEach((lease) => {
+    const propertyLabel = lease.property_id?.shop_number
+      ? `${lease.property_id.shop_number} (${lease.property_id._id})`
+      : lease.property_id?._id || "N/A";
+    const tenantLabel = lease.tenant_id?.tenant_name || lease.tenant_id?._id || "N/A";
+    const startDate = lease.lease_start ? new Date(lease.lease_start).toLocaleDateString() : "N/A";
+    const endDate = lease.lease_end ? new Date(lease.lease_end).toLocaleDateString() : "N/A";
 
-await fetch(`${API}/leases`,{
-method:"POST",
-headers:{ "Content-Type":"application/json"},
-body: JSON.stringify({property_id, tenant_id, lease_start, lease_end})
-});
+    table.innerHTML += `
+      <tr>
+        <td>${propertyLabel}</td>
+        <td>${tenantLabel}</td>
+        <td>${startDate}</td>
+        <td>${endDate}</td>
+      </tr>
+    `;
+  });
 
-document.getElementById("property_id").value="";
-document.getElementById("tenant_id").value="";
-document.getElementById("lease_start").value="";
-document.getElementById("lease_end").value="";
-
-alert("Lease Created");
-
+  if (typeof populateLeaseOptions === "function") populateLeaseOptions();
 }
-
-
-
-// ======================
-// ADD RENT
-// ======================
-
-async function addRent(){
-
-const lease_id = document.getElementById("lease_id").value;
-const amount = document.getElementById("amount").value;
-const status = document.getElementById("status").value;
-
-await fetch(`${API}/rent`,{
-method:"POST",
-headers:{ "Content-Type":"application/json"},
-body: JSON.stringify({lease_id, amount, status})
-});
-
-document.getElementById("lease_id").value="";
-document.getElementById("amount").value="";
-
-alert("Payment Added");
-
-}
-
-
 
 // ======================
-// ADD MAINTENANCE
+// RENT
 // ======================
 
-async function addMaintenance(){
+async function addRent() {
+  const lease_id = document.getElementById("lease_id").value;
+  const amount = document.getElementById("amount").value;
+  const status = document.getElementById("status").value;
 
-const property_id = document.getElementById("property_id").value;
-const issue = document.getElementById("issue").value;
-const status = document.getElementById("status").value;
+  if (!lease_id || !amount) {
+    alert("All fields required");
+    return;
+  }
 
-await fetch(`${API}/maintenance`,{
-method:"POST",
-headers:{ "Content-Type":"application/json"},
-body: JSON.stringify({property_id, issue, status})
-});
+  const rentRes = await fetch(`${API}/rent`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      lease_id,
+      payment_date: new Date().toISOString(),
+      amount,
+      payment_status: status,
+    }),
+  });
 
-document.getElementById("property_id").value="";
-document.getElementById("issue").value="";
+  if (!rentRes.ok) {
+    const errorText = await rentRes.text();
+    alert(`Rent save failed: ${errorText}`);
+    return;
+  }
 
-alert("Request Submitted");
+  document.getElementById("lease_id").value = "";
+  document.getElementById("amount").value = "";
+  document.getElementById("status").value = "";
 
-}
-async function loadRent(){
-
-const res = await fetch("http://localhost:5000/rent");
-
-const data = await res.json();
-
-let table = document.getElementById("rentTable");
-
-table.innerHTML="";
-
-data.forEach(r => {
-
-table.innerHTML += `
-<tr>
-<td>${r.lease_id}</td>
-<td>₹${r.amount}</td>
-<td>${r.status}</td>
-</tr>
-`;
-
-});
-
-}
-function loadDashboard(){
-
-/* Example numbers */
-
-let owners=5
-let properties=20
-let tenants=15
-let rent=75000
-
-document.getElementById("ownerCount").innerText=owners
-document.getElementById("propertyCount").innerText=properties
-document.getElementById("tenantCount").innerText=tenants
-document.getElementById("rentTotal").innerText="₹"+rent
-
-
-/* OCCUPANCY */
-
-let occupancy=(tenants/properties)*100
-
-document.getElementById("occupancyBar").style.width=occupancy+"%"
-
-document.getElementById("occupancyText").innerText=
-Math.round(occupancy)+"% Occupied"
-
-
-
-/* RENT CHART */
-
-let ctx=document.getElementById("rentChart")
-
-new Chart(ctx,{
-
-type:"bar",
-
-data:{
-
-labels:["Jan","Feb","Mar","Apr","May","Jun"],
-
-datasets:[{
-
-label:"Rent Collected",
-
-data:[12000,15000,10000,18000,20000,17000]
-
-}]
-
-},
-
-options:{
-
-responsive:true
-
+  loadRent();
+  loadDashboard();
 }
 
-})
+async function loadRent() {
+  const res = await fetch(`${API}/rent`);
+  const data = await res.json();
+  const table = document.getElementById("rentTable");
+  if (!table) return;
 
+  table.innerHTML = "";
+  data.forEach((payment) => {
+    const lease = payment.lease_id;
+    const leaseLabel = lease?.property_id?.shop_number
+      ? `${lease.property_id.shop_number} - ${lease.tenant_id?.tenant_name || lease.tenant_id?._id || "N/A"}`
+      : lease?._id || "N/A";
+    const paymentDate = payment.payment_date ? new Date(payment.payment_date).toLocaleDateString() : "N/A";
+    table.innerHTML += `
+      <tr>
+        <td>${leaseLabel}</td>
+        <td>₹${payment.amount}</td>
+        <td>${payment.payment_status}</td>
+      </tr>
+    `;
+  });
 }
+
+// ======================
+// MAINTENANCE
+// ======================
+
+async function addMaintenance() {
+  const property_id = document.getElementById("property_id").value;
+  const issue = document.getElementById("issue").value;
+  const status = document.getElementById("status").value;
+
+  if (!property_id || !issue) {
+    alert("All fields required");
+    return;
+  }
+
+  const maintenanceRes = await fetch(`${API}/maintenance`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      property_id,
+      request_date: new Date().toISOString(),
+      issue_description: issue,
+      status,
+    }),
+  });
+
+  if (!maintenanceRes.ok) {
+    const errorText = await maintenanceRes.text();
+    alert(`Maintenance save failed: ${errorText}`);
+    return;
+  }
+
+  document.getElementById("property_id").value = "";
+  document.getElementById("issue").value = "";
+  document.getElementById("status").value = "";
+
+  loadMaintenance();
+  loadDashboard();
+}
+
+async function loadMaintenance() {
+  const res = await fetch(`${API}/maintenance`);
+  const data = await res.json();
+  const table = document.getElementById("maintenanceTable");
+  if (!table) return;
+
+  table.innerHTML = "";
+  data.forEach((request) => {
+    const property = request.property_id;
+    const propertyLabel = property?.shop_number
+      ? `${property.shop_number} (${property._id})`
+      : property?._id || "N/A";
+    table.innerHTML += `
+      <tr>
+        <td>${propertyLabel}</td>
+        <td>${request.issue_description}</td>
+        <td>${request.status}</td>
+      </tr>
+    `;
+  });
+}
+
+// ======================
+// PAGE LOAD
+// ======================
+
+window.onload = function () {
+  loadDashboard();
+
+  if (typeof populateOwnerOptions === "function") populateOwnerOptions();
+  if (typeof populatePropertyOptions === "function") populatePropertyOptions();
+  if (typeof populateTenantOptions === "function") populateTenantOptions();
+  if (typeof populateLeaseOptions === "function") populateLeaseOptions();
+
+  if (typeof loadOwners === "function") loadOwners();
+  if (typeof loadTenants === "function") loadTenants();
+  if (typeof loadProperties === "function") loadProperties();
+  if (typeof loadLeases === "function") loadLeases();
+  if (typeof loadRent === "function") loadRent();
+  if (typeof loadMaintenance === "function") loadMaintenance();
+};

@@ -5,7 +5,10 @@ const RentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Lease"
   },
-  payment_date: Date,
+  payment_date: {
+    type: Date,
+    default: Date.now
+  },
   amount: Number,
   payment_status: String
 });

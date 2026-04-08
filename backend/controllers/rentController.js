@@ -20,7 +20,13 @@ res.status(500).json(error);
 
 export const getPayments = async(req,res)=>{
 
-const payments = await RentPayment.find().populate("lease_id");
+const payments = await RentPayment.find().populate({
+  path: "lease_id",
+  populate: [
+    { path: "property_id", populate: { path: "owner_id" } },
+    { path: "tenant_id" }
+  ]
+});
 
 res.json(payments);
 

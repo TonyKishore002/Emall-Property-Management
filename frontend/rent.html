@@ -41,7 +41,9 @@
 
 <form>
 
-<input id="lease_id" placeholder="Lease ID" required>
+<select id="lease_id" required>
+  <option value="">Select Lease</option>
+</select>
 
 <input id="amount" placeholder="Amount" required>
 
@@ -54,6 +56,23 @@
 <button type="button" onclick="addRent()">Add Payment</button>
 
 </form>
+
+</div>
+
+<div class="card">
+
+<h2>Rent Payments</h2>
+
+<table>
+<thead>
+<tr>
+<th>Lease ID</th>
+<th>Amount</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="rentTable"></tbody>
+</table>
 
 </div>
 

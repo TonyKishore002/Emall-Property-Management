@@ -41,9 +41,13 @@
 
 <form>
 
-<input id="property_id" placeholder="Property ID" required>
+<select id="property_id" required>
+  <option value="">Select Property</option>
+</select>
 
-<input id="tenant_id" placeholder="Tenant ID" required>
+<select id="tenant_id" required>
+  <option value="">Select Tenant</option>
+</select>
 
 <input type="date" id="lease_start" required>
 
@@ -52,6 +56,24 @@
 <button type="button" onclick="addLease()">Create Lease</button>
 
 </form>
+
+</div>
+
+<div class="card">
+
+<h2>Lease List</h2>
+
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Tenant</th>
+<th>Start Date</th>
+<th>End Date</th>
+</tr>
+</thead>
+<tbody id="leaseTable"></tbody>
+</table>
 
 </div>
 

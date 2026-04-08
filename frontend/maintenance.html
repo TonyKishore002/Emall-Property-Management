@@ -41,7 +41,9 @@
 
 <form>
 
-<input id="property_id" placeholder="Property ID" required>
+<select id="property_id" required>
+  <option value="">Select Property</option>
+</select>
 
 <input id="issue" placeholder="Issue Description" required>
 
@@ -54,6 +56,23 @@
 <button type="button" onclick="addMaintenance()">Submit Request</button>
 
 </form>
+
+</div>
+
+<div class="card">
+
+<h2>Maintenance Requests</h2>
+
+<table>
+<thead>
+<tr>
+<th>Property ID</th>
+<th>Issue</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="maintenanceTable"></tbody>
+</table>
 
 </div>
 

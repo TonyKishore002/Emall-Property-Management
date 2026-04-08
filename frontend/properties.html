@@ -41,7 +41,9 @@
 
 <form>
 
-<input id="owner_id" placeholder="Owner ID" required>
+<select id="owner_id" required>
+  <option value="">Select Owner</option>
+</select>
 
 <input id="shop_number" placeholder="Shop Number" required>
 
@@ -52,6 +54,27 @@
 <button type="button" onclick="addProperty()">Add Property</button>
 
 </form>
+</div>
+
+<div class="card">
+
+<h2>Property List</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>Owner</th>
+<th>Shop</th>
+<th>Floor</th>
+<th>Rent</th>
+</tr>
+</thead>
+
+<tbody id="propertyTable"></tbody>
+
+</table>
+
 </div>
 
 </div>

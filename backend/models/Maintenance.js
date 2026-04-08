@@ -5,7 +5,10 @@ const MaintenanceSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Property"
   },
-  request_date: Date,
+  request_date: {
+    type: Date,
+    default: Date.now
+  },
   issue_description: String,
   status: String
 });

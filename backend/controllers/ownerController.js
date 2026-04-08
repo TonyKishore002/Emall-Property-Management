@@ -14,3 +14,12 @@ export const getOwners = async (req, res) => {
   const owners = await Owner.find();
   res.json(owners);
 };
+
+export const deleteOwner = async (req, res) => {
+  try {
+    await Owner.findByIdAndDelete(req.params.id);
+    res.json({ message: "Owner deleted" });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
